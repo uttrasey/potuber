@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+       http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http.xsd"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-http="http://www.springframework.org/schema/integration/http">
 
-    <!-- empty context for now -->
+    <int:channel id="helloRequest" />
+    <int:channel id="helloResponse" />
+
+    <int-http:inbound-gateway id="inboundHelloGateway"
+                              supported-methods="GET"
+                              path="/hello"
+                              request-channel="helloRequest"
+                              reply-channel="helloResponse"
+                              reply-timeout="50000">
+    </int-http:inbound-gateway>
+
+    <int:service-activator id="hellServiceActivator"
+                           input-channel="helloRequest"
+                           output-channel="helloResponse"
+                           ref="helloService"
+                           method="world"
+                           requires-reply="true"
+                           send-timeout="60000"/>
+
+    <bean id="helloService" class="com.trazyinc.potuber.HelloService" />
 
 </beans>
