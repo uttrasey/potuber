@@ -1,2 +1,4 @@
 # potuber
-Potuber backend
+Potuber backend module.
+
+"Helping seeds feed"
